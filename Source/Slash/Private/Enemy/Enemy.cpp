@@ -105,8 +105,11 @@ void AEnemy::Die(){
 }
 
 void AEnemy::Attack(){
+	Super::Attack();
+	if(CombatTarget == nullptr){
+		return;
+	}
     EnemyState = EEnemyState::EES_Engaged;
-    Super::Attack();
     PlayAttackMontage();
 }
 
@@ -186,7 +189,7 @@ void AEnemy::LoseInterest(){
 
 void AEnemy::StartPatrolling(){
      EnemyState = EEnemyState::EES_Patrolling;
-     GetCharacterMovement()->MaxWalkSpeed = 125.f;
+     GetCharacterMovement()->MaxWalkSpeed = PatrollingSpeed;
 	 MoveToTarget(PatrolTarget);
 }
 
@@ -289,11 +292,15 @@ void AEnemy::PawnSeen(APawn* SeenPawn){
           EnemyState != EEnemyState::EES_Chasing &&
           EnemyState < EEnemyState::EES_Attacking &&
           SeenPawn->ActorHasTag(FName("EngageableTarget"));
+	const bool ShouldIgnore = SeenPawn->ActorHasTag(FName("Dead"));
 
 	if(bShouldChaseTarget){
           CombatTarget = SeenPawn;
 		  ClearPatrolTimer();
 		  ChaseTarget();
+	}
+	if(ShouldIgnore){
+		ChoosePatrolTarget();
 	}	  
 }
 
