@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Iterfaces/HitInterface.h"
+#include "Interfaces/HitInterface.h"
 #include "CharacterTypes.h"
 #include "BaseCharacter.generated.h"
 

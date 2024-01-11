@@ -16,6 +16,8 @@
 #include "Animation/AnimMontage.h"
 #include "HUD/SlashHUD.h"
 #include "HUD/SlashOverlay.h"
+#include "items/Soul.h"
+#include "items/Treasure.h"
 
 
 // Sets default values
@@ -95,7 +97,26 @@ void ASlashCharacter::Jump()
     }
 }
 
+void ASlashCharacter::SetOverlappingItem(AItem *Item)
+{
+	OverlappingItem = Item;
+}
 
+void ASlashCharacter::AddSouls(ASoul *Soul)
+{
+	if(Attributes && SlashOverlay){
+		Attributes->AddSouls(Soul->GetSouls());
+		SlashOverlay->SetSouls(Attributes->GetSouls());
+	}
+}
+
+void ASlashCharacter::AddGold(ATreasure *Treasure)
+{
+	if(Attributes && SlashOverlay){
+		Attributes->AddGold(Treasure->GetGold());
+		SlashOverlay->SetGold(Attributes->GetGold());
+	}
+}
 
 void ASlashCharacter::BeginPlay()
 {

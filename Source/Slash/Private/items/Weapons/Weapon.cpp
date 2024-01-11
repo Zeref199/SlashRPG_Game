@@ -8,7 +8,7 @@
 #include "Components/SphereComponent.h"
 #include "items/Weapons/Weapon.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Iterfaces/HitInterface.h"
+#include "Interfaces/HitInterface.h"
 #include "items/Item.h"
 #include "NiagaraComponent.h"
 
@@ -60,8 +60,8 @@ void AWeapon::DisableSphereCollision(){
         }
 }
 void AWeapon::DeactivateEmbers(){
-     if(EmbersEffect){
-        EmbersEffect->Deactivate();
+     if(ItemEffect){
+        ItemEffect->Deactivate();
       }  
 }
 void AWeapon::AttachMeshToSocket(USceneComponent *InParent, const FName &InSocketName)
