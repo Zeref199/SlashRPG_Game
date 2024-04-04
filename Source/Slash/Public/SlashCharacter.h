@@ -53,6 +53,7 @@ void Equip();
 
 void EquipWeapon(AWeapon *Weapon);
 virtual void AttackEnd() override;
+virtual void DodgeEnd() override;
 virtual bool CanAttack() override;
 
 void PlayEquipMontage(const FName &SectionName);
