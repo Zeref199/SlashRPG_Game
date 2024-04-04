@@ -23,7 +23,7 @@
 // Sets default values
 ASlashCharacter::ASlashCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -64,6 +64,17 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Attack);
 	EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Dodge);
 	EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Equip);
+	}
+
+}
+
+void ASlashCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if(Attributes && SlashOverlay){
+		Attributes->RegenStamina(DeltaTime);
+		SlashOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
 	}
 
 }
@@ -177,9 +188,15 @@ void ASlashCharacter::Attack()
 
 void ASlashCharacter::Dodge()
 {
-	if(ActionState != EActionState::EAS_Unoccupied) return;
-	PlayDodgeMontage();
+    if (IsOccupied() || !HasEnoughStamina()){ return; }
+
+    PlayDodgeMontage();
 	ActionState = EActionState::EAS_Dodge;
+
+    if(Attributes && SlashOverlay){
+		Attributes->UseStamina(Attributes->GetDodgeCost());
+		SlashOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+	}
 }
 
 void ASlashCharacter::Equip(){
@@ -252,6 +269,16 @@ void ASlashCharacter::Die()
 
 	ActionState = EActionState::EAS_Dead;
 	DisableMeshCollision();
+}
+
+bool ASlashCharacter::HasEnoughStamina()
+{
+    return Attributes && Attributes->GetStamina() > Attributes->GetDodgeCost();
+}
+
+bool ASlashCharacter::IsOccupied()
+{
+    return ActionState != EActionState::EAS_Unoccupied;
 }
 
 void ASlashCharacter::AttachWeaponToBack()
